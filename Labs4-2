@@ -1,0 +1,93 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+void randsize(int * size,int x, char * word) {
+    int n, temp,d=0, count[256]={'\0'};
+    for (int a=0; a<size[x]; a++) {
+        count[a]=a+1;
+    }
+    srand(time(0));
+    
+    if (size[x]>=2)     {
+        while (size[x])     {
+        n=rand()%size[x];
+        temp=count[n];
+        count[n]=count[size[x]-1];
+        count[size[x]-1]=temp;
+        size[x]--;
+            }
+        }
+    putchar(word[0]);
+    while (count[d]) {
+    putchar(word[count[d]]);
+        d++;
+    }
+    if (word[d+1])
+        putchar(word[d+1]);
+    printf(" ");
+}
+
+void symbols (char * buf) {
+    char * firstSymb[50];
+    char * lastSymb[50];
+    int i = 0,f = 0, inword=0, size[256], x=0;
+    char word[80];
+    while (buf[i]) {
+        if (buf[i]!=' ' && inword==0) {
+            firstSymb[f]=&buf[i];
+            inword=1;
+        }
+        else if (buf[i]==' ' && inword==1) {
+            inword=0;
+            lastSymb[f]=&buf[i-1];
+            f++;
+        }
+        i++;
+    }
+   lastSymb[f]=&buf[i-1];
+    for (; x<=f; x++) {
+        size[x]=lastSymb[x]-firstSymb[x]-1;
+    }
+    x--;
+    for (int s=0; s<=x; s++) {
+        int p=0;
+        while (firstSymb[s]<=lastSymb[s]) {
+            word[p]=*firstSymb[s]++;
+            p++;
+            word[p]='\0';
+        }
+            randsize(size, s, word);
+    }
+        putchar('\n');
+}
+
+int main () {
+    int i=0;
+    char buf[256], ch;
+    FILE *fp;
+    fp=fopen(file_with_text.txt", "rt");
+    if (fp==0) {
+        puts("File Error!");
+        return 1;
+    }
+    while((ch=fgetc(fp)) != EOF) {
+        if (ch=='\n') {
+            symbols(buf);
+            i=0;
+            for (int g=0; g!=256; g++) {
+                   buf[g]='\0';
+                }
+        }
+        else {
+            buf[i]=ch;
+            i++;
+        }
+    }
+    buf[i]='\0';
+    symbols(buf);
+    printf("/n");
+    fclose(fp);
+    return 0;
+}
